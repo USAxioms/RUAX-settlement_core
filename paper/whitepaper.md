@@ -1,4 +1,4 @@
-# MARUSC-2026: A Deterministic WAD18 Settlement and Leverage-Control Reference Model
+# RUAX-MARUSC-2026: A Deterministic WAD18 Settlement and Leverage-Control Reference Model
 **Technical specification, capsule v3.0.0.** Integer-only double-entry settlement engine with an exact leverage cap, a circuit breaker, and a dual-path recompute-and-compare auditor.
 
 **Document control.** Reference model and specification of behavior. Not investment, legal or accounting advice. Not audited, certified or reviewed by any third party; no endorsement or relationship with any institution is stated or implied. Every parameter not given in the originating directive is a **placeholder**.
