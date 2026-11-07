@@ -1,0 +1,24 @@
+[parameters] EV=3000000000.000000000000000000 CAP=0.450000000000000000 BREAKER=0.480000000000000000
+[settlement scenario]
+  capitalize 2.0B equity             -> COMMITTED  TX                     state=ACTIVE     h=1 lev=0.000000000000000000
+  borrow 1.2B senior debt            -> COMMITTED  TX                     state=ACTIVE     h=2 lev=0.400000000000000000
+  acquire 3.0B assets                -> COMMITTED  TX                     state=ACTIVE     h=3 lev=0.400000000000000000
+  intercompany SL1->SL2 100M         -> COMMITTED  TX                     state=ACTIVE     h=4 lev=0.400000000000000000
+  borrow 150M (debt = 45.000...%)    -> COMMITTED  TX                     state=ACTIVE     h=5 lev=0.450000000000000000
+  borrow +1 ulp                      -> REJECTED   CAP_BREACH             state=ACTIVE     h=5 lev=0.450000000000000000
+  float amount 1350000000.5          -> REJECTED   NON_INTEGER_INPUT      state=ACTIVE     h=5 lev=0.450000000000000000
+  unbalanced across sub-ledgers      -> REJECTED   UNBALANCED             state=ACTIVE     h=5 lev=0.450000000000000000
+  overspend cash                     -> REJECTED   NEGATIVE_ASSET         state=ACTIVE     h=5 lev=0.450000000000000000
+  mark EV 2.9B                       -> COMMITTED  MARK                   state=RESTRICTED h=6 lev=0.465517241379310345
+  borrow +1 ulp while restricted     -> REJECTED   CAP_BREACH             state=RESTRICTED h=6 lev=0.465517241379310345
+  mark EV 2.8B (breaker)             -> COMMITTED  MARK                   state=FROZEN     h=7 lev=0.482142857142857143
+  post while frozen                  -> REJECTED   FROZEN                 state=FROZEN     h=7 lev=0.482142857142857143
+  audit_unfreeze (no remediation)    -> STILL_FROZEN AUDIT                  state=FROZEN     h=8 lev=0.482142857142857143
+  audit_unfreeze + repay 200M        -> UNFROZEN   REMEDY                 state=ACTIVE     h=9 lev=0.410714285714285715
+[stress] z=2 sigma=0.2 t=1: stressed_ev=1876896128.899790042084412190 stressed_lev=0.612713715102664595 breaker_exceeded=True
+[ledger] height=9 chain_ok=True conserved=True
+  head=496b2d8ae8fd5fc548492f199fe1030832f3e1ea02e40c28b1a9a130e16e921c
+  log_head=46e0f9648f559235192152c5eddb3a09463b3bc043af6f13ead307abcf267e85
+[fault injection] path-A balance +1 ulp during a valid block
+  result=HALTED reason=AUDIT:BALANCE_MISMATCH state=HALTED rolled_back=True
+  next block: REJECTED HALTED
